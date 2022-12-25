@@ -18,7 +18,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::latest()->get();
+        $projects = auth()->user()->projects()->latest()->get();
 
         return view('projects.index', compact('projects'));
     }
@@ -46,6 +46,7 @@ class ProjectController extends Controller
             'title' => 'required|min:5|max:72',
             'description' => 'required:min:10',
         ]);
+        $data['user_id'] = auth()->id();
 
         Project::create($data);
 
@@ -62,6 +63,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        abort_if(auth()->user()->id != $project->user_id, 403);
         return view('projects.show', compact('project'));
     }
 
@@ -85,13 +87,23 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        $project->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'status' => $request->status,
+        $data = $request->validate([
+            'title' => 'required|min:5|max:72',
+            'description' => 'required:min:10',
+
         ]);
 
+
+        $project->update($data);
+
         return redirect('/projects');
+    }
+
+    public function complete(Request $request, Project $project)
+    {
+        $project->update(['status' => $request->status]);
+
+        return back();
     }
 
     /**

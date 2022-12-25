@@ -21,7 +21,7 @@
                 </a>
             </h5>
             <div class="card-text mt-4">
-                {{ $project->description }}
+                {{ Str::limit($project->description, 50) }}
             </div>
             <div class="card-footer mt-2">
                 <div class="d-flex">
@@ -34,11 +34,13 @@
                     <div class="d-flex align-items-center m-auto">
                         <img src="/icons/list-check.svg" alt="clock">
                         <div class="mx-2">
-                            3 Tasks
+                            {{ count($project->tasks) }} Tasks
                         </div>
                     </div>
                     <div class="d-flex align-items-center">
-                        <form action="/projects/1" method="POST">
+                        <form action="/projects/{{ $project->id }}" method="POST">
+                            @csrf
+                            @method('DELETE')
                             <button type="submit" class="btn btn-link text-danger">
                                 <img src="/icons/trash.svg" alt="clock">
                             </button>

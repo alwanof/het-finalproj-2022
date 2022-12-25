@@ -7,7 +7,7 @@
             </a> / Project Title
         </div>
         <div>
-            <a href="/projects/edit" class="btn btn-primary px-4">
+            <a href="/projects/{{ $project->id }}/edit" class="btn btn-primary px-4">
                 Edit Project
             </a>
 
@@ -19,12 +19,15 @@
                 @include('projects.card')
                 <div class="card mt-2">
                     <div class="card-body">
-                        <form action="">
-                            <select name="status" class="form-control">
-                                <option value="1">Done</option>
-                                <option value="2" selected>In Progress</option>
-                                <option value="3">To Do</option>
+                        <form action="/projects/{{ $project->id }}/complete" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <select name="status" class="form-control" onchange="this.form.submit()">
+                                <option value="0" {{ $project->status == 0 ? 'selected' : '' }}>In Progress</option>
+                                <option value="1" {{ $project->status == 1 ? 'selected' : '' }}>Completed</option>
+                                <option value="2" {{ $project->status == 2 ? 'selected' : '' }}>Conceled</option>
                             </select>
+
                         </form>
                     </div>
                 </div>
@@ -32,60 +35,53 @@
 
             <div class="col-8">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @forelse ($project->tasks as $task)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <form action="/tasks/{{ $task->id }}/complete" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input class="form-check-input me-1" name="completed" type="checkbox" value="1"
+                                        {{ $task->completed == 1 ? 'checked' : '' }} id="firstCheckbox"
+                                        onchange="this.form.submit()">
+                                    <label class="form-check-label" for="firstCheckbox">{{ $task->name }}</label>
+
+                                </form>
+                            </div>
+                            <span>
+
+
+                                <form action="/tasks/{{ $task->id }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn">
+                                        <img src="/icons/trash.svg" alt="">
+                                    </button>
+
+                                </form>
+
+                            </span>
+
+                        </li>
+                    @empty
                         <div>
-                            <input class="form-check-input me-1" type="checkbox" value="" id="firstCheckbox">
-                            <label class="form-check-label" for="firstCheckbox">Task 1</label>
-
+                            No tasks yet
                         </div>
-                        <span>
-                            <img src="/icons/trash.svg" alt="">
-                        </span>
+                    @endforelse
 
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <input class="form-check-input me-1" type="checkbox" value="" checked id="firstCheckbox">
-                            <label class="form-check-label text-muted" for="firstCheckbox"><del>Task 2</del></label>
-
-                        </div>
-                        <span>
-                            <img src="/icons/trash.svg" alt="">
-                        </span>
-
-                    </li>
-
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <input class="form-check-input me-1" type="checkbox" value="" id="firstCheckbox">
-                            <label class="form-check-label" for="firstCheckbox">Task 3</label>
-
-                        </div>
-                        <span>
-                            <img src="/icons/trash.svg" alt="">
-                        </span>
-
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <input class="form-check-input me-1" type="checkbox" value="" id="firstCheckbox">
-                            <label class="form-check-label" for="firstCheckbox">Task 4</label>
-
-                        </div>
-                        <span>
-                            <img src="/icons/trash.svg" alt="">
-                        </span>
-
-                    </li>
 
                 </ul>
-                <div class="input-group my-3">
-                    <input type="text" class="form-control" placeholder="Add new task" aria-label="Recipient's username"
-                        aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-success" type="button">Add</button>
+                <form action="/tasks/{{ $project->id }}" method="POST">
+                    @csrf
+                    <div class="input-group my-3">
+                        <input type="text" class="form-control" name="name" placeholder="Add new task"
+                            aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-success" type="submit">Add</button>
+                        </div>
                     </div>
-                </div>
+                </form>
+
             </div>
         </div>
 
