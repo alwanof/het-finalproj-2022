@@ -15,15 +15,17 @@
     </header>
     <section>
         <div class="row">
-            <div class="col-4 mb-4">
-                @include('projects.card')
-            </div>
-            <div class="col-4 mb-4">
-                @include('projects.card')
-            </div>
-            <div class="col-4 mb-4">
-                @include('projects.card')
-            </div>
+            @forelse ($projects as $project)
+                <div class="col-4 mb-4">
+                    @include('projects.card')
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        No projects yet.
+                    </div>
+                </div>
+            @endforelse
         </div>
     </section>
 @endsection

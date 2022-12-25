@@ -1,21 +1,34 @@
 <div class="card">
     <div class="card-body">
         <div class="status">
-            <span class="text-success">Done</span>
+            <span class="text-success">
+                @switch($project->status)
+                    @case(0)
+                        {{ 'In Progress' }}
+                    @break
+
+                    @case(1)
+                        {{ 'Completed' }}
+                    @break
+
+                    @default
+                        {{ 'Canceled' }}
+                @endswitch
+            </span>
             <h5 class="font-weight-bold card-title">
-                <a href="/projects/2">
-                    Project Title
+                <a href="/projects/{{ $project->id }}">
+                    {{ $project->title }}
                 </a>
             </h5>
             <div class="card-text mt-4">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
+                {{ $project->description }}
             </div>
             <div class="card-footer mt-2">
                 <div class="d-flex">
                     <div class="d-flex align-items-center">
                         <img src="/icons/clock.svg" alt="clock">
                         <div class="mx-2">
-                            2 mins ago
+                            {{ $project->created_at->diffForHumans() }}
                         </div>
                     </div>
                     <div class="d-flex align-items-center m-auto">

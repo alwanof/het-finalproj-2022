@@ -6,16 +6,25 @@
             <h3 class="text-center pb-5 font-weight-bold">
                 New Project
             </h3>
-
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <form action="/projects" method="POST">
+                @csrf
                 <div class="form-group mb-3">
                     <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="title">
+                    <input type="text" class="form-control" id="title" name="title" placeholder="title" required>
 
                 </div>
                 <div class="form-group mb-3">
                     <label for="description">Description</label>
-                    <textarea id="description" name="description" placeholder="description" class="form-control"></textarea>
+                    <textarea id="description" name="description" placeholder="description" class="form-control" required></textarea>
 
                 </div>
 
